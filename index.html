@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Flow | نظام إدارة المهام</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Arabic Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- App Style -->
+  <link rel="stylesheet" href="./css/style.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Tajawal', 'Arial', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 18px 45px rgba(15, 23, 42, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-50 text-slate-900 dark:bg-[#07111f] dark:text-white font-sans">
+  <div id="mobileOverlay" class="hidden fixed inset-0 bg-black/40 z-30 lg:hidden"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed right-0 top-0 z-40 h-full w-72 bg-[#003C7D] text-white p-5 transition-transform duration-300 translate-x-full lg:translate-x-0 shadow-2xl flex flex-col">
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-[#00A3E0] flex items-center justify-center shadow-lg">
+          <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-black">Task Flow</h1>
+          <p class="text-xs text-white/60">نظام إدارة المهام</p>
+        </div>
+      </div>
+
+      <button id="closeSidebar" class="lg:hidden w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <nav id="sidebarNav" class="space-y-1.5 flex-1">
+      <button data-page="dashboard" class="nav-item active">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span>لوحة التحكم</span>
+      </button>
+
+      <button data-page="tasks" class="nav-item">
+        <i data-lucide="check-square" class="w-5 h-5"></i>
+        <span>المهام</span>
+      </button>
+
+      <button data-page="clients" class="nav-item">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span>العملاء</span>
+      </button>
+
+      <button data-page="notes" class="nav-item">
+        <i data-lucide="sticky-note" class="w-5 h-5"></i>
+        <span>الملاحظات</span>
+      </button>
+
+      <button data-page="calendar" class="nav-item">
+        <i data-lucide="calendar-days" class="w-5 h-5"></i>
+        <span>التقويم</span>
+      </button>
+
+      <button data-page="settings" class="nav-item">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>الإعدادات</span>
+      </button>
+    </nav>
+
+    <div class="mt-6 rounded-3xl bg-white/10 p-4 border border-white/10">
+      <div class="flex items-center gap-2 text-sm font-bold">
+        <i data-lucide="cloud" class="w-4 h-4 text-sky-200"></i>
+        Google Drive
+      </div>
+      <p id="driveSidebarStatus" class="text-xs text-white/60 mt-2 leading-relaxed">
+        سجّل دخول Google Drive لتفعيل الحفظ السحابي التلقائي.
+      </p>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="lg:mr-72 min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3 flex flex-col md:flex-row gap-3 md:items-center">
+      <div class="flex items-center gap-3 flex-1">
+        <button id="openSidebar" class="lg:hidden w-11 h-11 bg-[#003C7D] text-white rounded-2xl flex items-center justify-center">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+
+        <div class="relative flex-1 max-w-2xl">
+          <i data-lucide="search" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+          <input id="globalSearch" type="text" placeholder="ابحث عن مهمة، عميل، ملاحظة..."
+                 class="w-full pr-11 pl-4 py-3 rounded-2xl bg-[#EDF5FD] dark:bg-[#11263F] outline-none border border-transparent focus:border-[#003C7D] text-sm text-slate-900 dark:text-white">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2">
+        <button id="driveLoginBtn" class="px-4 py-2.5 rounded-2xl bg-white dark:bg-[#0B1F36] border border-slate-200 dark:border-slate-800 text-[#003C7D] dark:text-sky-300 font-bold shadow-sm flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+          <i data-lucide="cloud" class="w-4 h-4"></i>
+          ربط Google Drive
+        </button>
+
+        <button id="driveLogoutBtn" class="hidden px-4 py-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold shadow-sm items-center gap-2">
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+          متصل
+        </button>
+
+        <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-2xl bg-white dark:bg-[#0B1F36] border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-300 text-xs font-bold shadow-sm">
+          <i data-lucide="save" class="w-4 h-4 text-emerald-500"></i>
+          <span id="saveStatusText">جاهز للحفظ</span>
+        </div>
+
+        <button id="quickAddTask" class="hidden sm:flex px-4 py-2.5 rounded-2xl bg-[#003C7D] text-white font-bold shadow-sm items-center gap-2 hover:bg-[#002f63] transition">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          مهمة جديدة
+        </button>
+
+        <button id="themeToggle" class="w-11 h-11 bg-white dark:bg-[#0B1F36] border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center shadow-sm">
+          <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </header>
+
+    <section id="appView" class="p-4 md:p-8"></section>
+  </main>
+
+  <!-- Task Modal -->
+  <div id="taskModal" class="modal">
+    <div class="modal-card max-w-2xl">
+      <div class="modal-header">
+        <h3 id="taskModalTitle" class="modal-title">إضافة مهمة جديدة</h3>
+        <button data-close-modal="taskModal" class="modal-close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="taskForm" class="p-5 grid md:grid-cols-2 gap-4 overflow-y-auto max-h-[78vh]">
+        <input type="hidden" id="taskId">
+
+        <label class="field md:col-span-2">
+          <span>عنوان المهمة</span>
+          <input id="taskTitle" required class="input" placeholder="مثال: متابعة مستندات عميل">
+        </label>
+
+        <label class="field">
+          <span>التصنيف</span>
+          <select id="taskCategory" class="input"></select>
+        </label>
+
+        <label class="field">
+          <span>الأولوية</span>
+          <select id="taskPriority" class="input">
+            <option>عاجلة جدًا</option>
+            <option>عالية</option>
+            <option selected>متوسطة</option>
+            <option>منخفضة</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>الحالة</span>
+          <select id="taskStatus" class="input">
+            <option selected>جديدة</option>
+            <option>قيد التنفيذ</option>
+            <option>بانتظار رد</option>
+            <option>مؤجلة</option>
+            <option>مكتملة</option>
+            <option>متأخرة</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>موعد الانتهاء</span>
+          <input id="taskDeadline" type="date" class="input">
+        </label>
+
+        <label class="field md:col-span-2">
+          <span>وصف المهمة</span>
+          <textarea id="taskDesc" rows="4" class="input" placeholder="اكتب تفاصيل المهمة..."></textarea>
+        </label>
+
+        <div class="md:col-span-2 flex gap-2 justify-end">
+          <button type="button" data-close-modal="taskModal" class="btn-secondary">إلغاء</button>
+          <button class="btn-primary">حفظ المهمة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Client Modal -->
+  <div id="clientModal" class="modal">
+    <div class="modal-card max-w-2xl">
+      <div class="modal-header">
+        <h3 class="modal-title">إضافة عميل</h3>
+        <button data-close-modal="clientModal" class="modal-close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="clientForm" class="p-5 grid md:grid-cols-2 gap-4">
+        <input type="hidden" id="clientId">
+        <label class="field">
+          <span>اسم العميل</span>
+          <input id="clientName" required class="input" placeholder="اسم العميل">
+        </label>
+
+        <label class="field">
+          <span>رقم الجوال</span>
+          <input id="clientPhone" class="input ltr text-right" placeholder="05xxxxxxxx">
+        </label>
+
+        <label class="field">
+          <span>نوع الطلب</span>
+          <input id="clientType" class="input" placeholder="تمويل / بطاقة / مستندات">
+        </label>
+
+        <label class="field">
+          <span>تاريخ المتابعة</span>
+          <input id="clientDate" type="date" class="input">
+        </label>
+
+        <label class="field md:col-span-2">
+          <span>الخطوة القادمة</span>
+          <textarea id="clientNext" rows="4" class="input" placeholder="ما هي الخطوة القادمة؟"></textarea>
+        </label>
+
+        <div class="md:col-span-2 flex gap-2 justify-end">
+          <button type="button" data-close-modal="clientModal" class="btn-secondary">إلغاء</button>
+          <button class="btn-primary">حفظ العميل</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Note Modal -->
+  <div id="noteModal" class="modal">
+    <div class="modal-card max-w-xl">
+      <div class="modal-header">
+        <h3 class="modal-title">إضافة ملاحظة</h3>
+        <button data-close-modal="noteModal" class="modal-close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="noteForm" class="p-5 space-y-4">
+        <label class="field">
+          <span>عنوان الملاحظة</span>
+          <input id="noteTitle" required class="input" placeholder="عنوان مختصر">
+        </label>
+
+        <label class="field">
+          <span>المحتوى</span>
+          <textarea id="noteContent" required rows="6" class="input" placeholder="اكتب الملاحظة..."></textarea>
+        </label>
+
+        <div class="flex gap-2 justify-end">
+          <button type="button" data-close-modal="noteModal" class="btn-secondary">إلغاء</button>
+          <button class="btn-primary">حفظ الملاحظة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Task Details Modal -->
+  <div id="taskDetailsModal" class="modal">
+    <div class="modal-card max-w-2xl">
+      <div class="modal-header">
+        <h3 class="modal-title">تفاصيل المهمة</h3>
+        <button data-close-modal="taskDetailsModal" class="modal-close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="taskDetailsContent" class="p-5 space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- Lucide Icons -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- App Scripts -->
+  <script src="./data/drive-storage.js"></script>
+  <script src="./js/main.js"></script>
+</body>
+</html>

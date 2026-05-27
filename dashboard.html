@@ -1,0 +1,77 @@
+<div class="space-y-6">
+  <div class="relative overflow-hidden bg-gradient-to-l from-[#003C7D] to-[#0057B8] rounded-[34px] p-6 md:p-8 text-white shadow-xl">
+    <div class="absolute left-0 top-0 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+
+    <div class="relative z-10 grid xl:grid-cols-[1fr_430px] gap-6 items-center">
+      <div>
+        <p class="text-white/75 text-sm font-bold mb-2">مرحبًا بك 👋</p>
+        <h2 class="text-2xl md:text-4xl font-black leading-tight">رتّب مهامك وعملائك في مكان واحد</h2>
+        <p class="text-white/70 max-w-2xl text-sm leading-relaxed mt-3">
+          لوحة تحكم بسيطة وسريعة لإدارة المهام، العملاء، الملاحظات والتقويم اليومي.
+        </p>
+
+        <div class="flex flex-wrap gap-3 mt-6">
+          <button onclick="App.openTaskModal()" class="px-5 py-3 rounded-2xl bg-white text-[#003C7D] font-black shadow-lg">+ مهمة جديدة</button>
+          <button onclick="App.openModal('clientModal')" class="px-5 py-3 rounded-2xl bg-[#00A3E0] text-white font-black shadow-lg">+ عميل جديد</button>
+          <button onclick="App.openModal('noteModal')" class="px-5 py-3 rounded-2xl bg-white/15 text-white font-black border border-white/20">+ ملاحظة</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white/10 backdrop-blur rounded-3xl p-4 border border-white/10">
+          <i data-lucide="check-square" class="w-5 h-5 text-white/80 mb-3"></i>
+          <p class="text-white/60 text-xs font-bold">إجمالي المهام</p>
+          <h3 id="statTotalTasks" class="text-3xl font-black mt-1">0</h3>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur rounded-3xl p-4 border border-white/10">
+          <i data-lucide="calendar-days" class="w-5 h-5 text-white/80 mb-3"></i>
+          <p class="text-white/60 text-xs font-bold">مهام اليوم</p>
+          <h3 id="statTodayTasks" class="text-3xl font-black mt-1">0</h3>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur rounded-3xl p-4 border border-white/10">
+          <i data-lucide="alert-circle" class="w-5 h-5 text-white/80 mb-3"></i>
+          <p class="text-white/60 text-xs font-bold">المتأخرة</p>
+          <h3 id="statLateTasks" class="text-3xl font-black mt-1 text-rose-300">0</h3>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur rounded-3xl p-4 border border-white/10">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-white/80 mb-3"></i>
+          <p class="text-white/60 text-xs font-bold">المكتملة</p>
+          <h3 id="statDoneTasks" class="text-3xl font-black mt-1 text-emerald-300">0</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="card p-5">
+      <p class="text-xs text-slate-500 font-bold">العملاء</p>
+      <h3 id="statClients" class="text-3xl font-black mt-2 text-[#003C7D] dark:text-sky-300">0</h3>
+    </div>
+
+    <div class="card p-5">
+      <p class="text-xs text-slate-500 font-bold">الملاحظات</p>
+      <h3 id="statNotes" class="text-3xl font-black mt-2 text-[#003C7D] dark:text-sky-300">0</h3>
+    </div>
+
+    <div class="card p-5">
+      <p class="text-xs text-slate-500 font-bold">الإنتاجية</p>
+      <h3 id="statProgress" class="text-3xl font-black mt-2 text-[#003C7D] dark:text-sky-300">0%</h3>
+    </div>
+
+    <div class="card p-5">
+      <p class="text-xs text-slate-500 font-bold">الحفظ</p>
+      <h3 class="text-lg font-black mt-2 text-emerald-600">تلقائي</h3>
+    </div>
+  </div>
+
+  <div class="card overflow-hidden">
+    <div class="p-5 border-b border-slate-100 dark:border-slate-800">
+      <h3 class="font-black text-lg text-[#003C7D] dark:text-white">أحدث المهام</h3>
+      <p class="text-xs text-slate-500 mt-1">آخر المهام المسجلة في النظام</p>
+    </div>
+    <div id="todayTasksList"></div>
+  </div>
+</div>

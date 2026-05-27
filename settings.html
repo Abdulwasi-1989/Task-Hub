@@ -1,0 +1,36 @@
+<div class="space-y-6">
+  <div>
+    <h2 class="text-2xl md:text-3xl font-black text-[#003C7D] dark:text-white">الإعدادات</h2>
+    <p class="text-xs text-slate-500 mt-1">إدارة التصنيفات وبيانات النظام</p>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 card p-6">
+      <h3 class="font-black text-lg text-[#003C7D] dark:text-white mb-2">تصنيفات المهام</h3>
+      <p class="text-xs text-slate-500 mb-5">أضف أو احذف التصنيفات التي تظهر في نموذج إضافة المهمة.</p>
+
+      <form id="categoryForm" class="flex gap-2 mb-5">
+        <input id="newCategory" class="input" placeholder="مثال: عقود">
+        <button class="btn-primary whitespace-nowrap">إضافة</button>
+      </form>
+
+      <div id="categoryList" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <div class="card p-6 space-y-4">
+      <h3 class="font-black text-lg text-[#003C7D] dark:text-white">إدارة البيانات</h3>
+
+      <button id="resetDataBtn" class="w-full py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 font-bold">
+        استرجاع بيانات تجريبية
+      </button>
+
+      <button id="clearDataBtn" class="w-full py-3 rounded-2xl bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300 font-bold">
+        مسح كل البيانات
+      </button>
+
+      <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300 text-xs leading-relaxed border border-emerald-100 dark:border-emerald-900/40">
+        عند ربط Google Drive يتم الحفظ تلقائيًا في ملف taskflow_data.json داخل حسابك.
+      </div>
+    </div>
+  </div>
+</div>
